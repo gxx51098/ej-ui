@@ -2,7 +2,7 @@ import axios from 'axios';
 import {message} from 'antd'
 import qs from 'qs'
 // 1. axios的默认配置
-axios.defaults.baseURL = "http://localhost:8000"
+axios.defaults.baseURL = "http://localhost:8080"
 axios.defaults.headers["Content-Type"]= "application/x-www-form-urlencoded";
 
 
@@ -22,6 +22,7 @@ axios.interceptors.response.use((response)=>{
     message.error(data.message)
     return Promise.reject(response);
   }
+  
   return response;
 },(error)=>{
   message.error("服务端异常")
