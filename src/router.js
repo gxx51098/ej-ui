@@ -1,8 +1,8 @@
 import React from 'react';
 import { Router, Route, Switch } from 'dva/router';
 import IndexPage from './routes/IndexPage';
-import OrderLinePage from './routes/OrderLinePage'
 import CustomerPage from './routes/CustomerPage'
+import OrderLinePage from './routes/OrderLinePage'
 import OrderPage from './routes/OrderPage'
 
 
