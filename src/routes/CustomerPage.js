@@ -29,7 +29,9 @@ class CustomerPage extends React.Component {
   reloadData(){
     this.setState({loading:true});
     axios.get("/customer/findAll")
+    
     .then((result)=>{
+      console.log(result);
       // 将查询数据更新到state中
       this.setState({list:result.data})
     })
