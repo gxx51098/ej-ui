@@ -4,19 +4,23 @@ import IndexPage from './routes/IndexPage';
 import CustomerPage from './routes/CustomerPage'
 import OrderLinePage from './routes/OrderLinePage'
 import OrderPage from './routes/OrderPage'
+import CustomerDetails from './routes/CustomerDetails'
 
 
 function RouterConfig({ history }) {
   return (
-      <Router history={history}>
-        <Switch>
-          <Route path="/" exact component={IndexPage} />
-          <Route path="/orderLine" exact component={OrderLinePage} />
-          <Route path="/customer" exact component={CustomerPage} />
-          <Route path="/order" exact component={OrderPage} />
-        </Switch>
-      </Router>
-    
+    <Router history={history}>
+      <Switch>
+        <Route path="/" exact component={IndexPage} />
+        <IndexPage>
+          <Route path="/orderLine" component={OrderLinePage} />
+          <Route path="/customer" component={CustomerPage} />
+          <Route path="/order" component={OrderPage} />
+          <Route path="/customerDetails" exact component={CustomerDetails} />
+        </IndexPage>
+      </Switch>
+    </Router>
+
   );
 }
 

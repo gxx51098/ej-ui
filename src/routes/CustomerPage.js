@@ -31,7 +31,7 @@ class CustomerPage extends React.Component {
     axios.get("/customer/findAll")
     
     .then((result)=>{
-      console.log(result);
+      // console.log(result);
       // 将查询数据更新到state中
       this.setState({list:result.data})
     })
@@ -45,6 +45,7 @@ class CustomerPage extends React.Component {
       title: '确定删除这些记录吗?',
       content: '删除后数据将无法恢复',
       onOk:() => {
+        console.log(this.state.ids)
         axios.post("/customer/batchDelete",{ids:this.state.ids})
         .then((result)=>{
           //批量删除后重载数据
@@ -62,11 +63,9 @@ class CustomerPage extends React.Component {
       content: '删除后数据将无法恢复',
       onOk:() => {
         // 删除操作
-        axios.get("/customer/deleteById",{
-          params:{
+        axios.post("/customer/deleteById",{
             id:id
-          }
-        })
+          })
         .then((result)=>{
           // 删除成功后提醒消息，并且重载数据
           message.success(result.statusText);
@@ -86,8 +85,9 @@ class CustomerPage extends React.Component {
       if (err) {
         return;
       }
+
       // 表单校验完成后与后台通信进行保存
-      axios.post("/customer/saveOrUpdate",values)
+      axios.post('/customer/saveOrUpdate',values)
       .then((result)=>{
         message.success(result.statusText)
         // 重置表单
@@ -115,11 +115,20 @@ class CustomerPage extends React.Component {
     // 将record值绑定表单中
     this.setState({visible:true})
   }
+  toDetails(record){
+    console.log(record);
+    //跳转
+    this.props.history.push("/customerDetails")
+  }
+  
 
   // 组件类务必要重写的方法，表示页面渲染
   render(){
     // 变量定义
     let columns = [{
+      title:'编号',
+      dataIndex:'id'
+    },{
       title:'姓名',
       dataIndex:'realname'
     },{
@@ -130,14 +139,19 @@ class CustomerPage extends React.Component {
       align:"center",
       dataIndex:'status'
     },{
+      title:'图片',
+      align:"center",
+      dataIndex:'photos'
+    },{
       title:'操作',
-      width:120,
+      width:200,
       align:"center",
       render:(text,record)=>{
         return (
           <div>
             <Button type='link' size="small" onClick={this.handleDelete.bind(this,record.id)}>删除</Button>
             <Button type='link' size="small" onClick={this.toEdit.bind(this,record)}>修改</Button>
+            <Button type='link' size="small" onClick={this.toDetails.bind(this,record)}>详情</Button>
           </div>
         )
       }
@@ -173,7 +187,7 @@ class CustomerPage extends React.Component {
           columns={columns}
           dataSource={this.state.list}/>
 
-        <CustomerForm
+         <CustomerForm
           initData={this.state.customer}
           wrappedComponentRef={this.saveFormRef}
           visible={this.state.visible}

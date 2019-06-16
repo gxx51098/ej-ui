@@ -20,7 +20,7 @@ class CustomerForm extends React.Component {
     // 将表单中没有出现的值做一个双向数据绑定
     getFieldDecorator("id");
     getFieldDecorator("status");
-    getFieldDecorator("phtot");
+    getFieldDecorator("photo");
     return (
       <Modal
           visible={visible}
