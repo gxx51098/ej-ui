@@ -5,7 +5,6 @@ import CustomerPage from './routes/CustomerPage'
 import OrderLinePage from './routes/OrderLinePage'
 import OrderPage from './routes/OrderPage'
 
-
 function RouterConfig({ history }) {
   return (
       <Router history={history}>
