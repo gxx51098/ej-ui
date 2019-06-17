@@ -25,38 +25,38 @@ class IndexPage extends React.Component {
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
             <Menu.Item key="1">
               <Link to='customer'>
-                <Icon type="user" />
+                <Icon type="user"/>
                 <span>客户管理</span>
               </Link>
             </Menu.Item>
             <Menu.Item key="2">
               <Link to='order'>
-                <Icon type="user" />
+                <Icon type="like" />
                 <span>订单管理</span>
               </Link>
             </Menu.Item>
             <Menu.Item key="3">
             <Link to='product'>
-              <Icon type="user" />
+              <Icon type="shopping" />
               <span>产品管理</span>
               </Link>
             </Menu.Item>
             <Menu.Item key="4">
               <Link to='Category'>
-                <Icon type="user" />
+                <Icon type="schedule" />
                 <span>分类管理</span>
               </Link>
             </Menu.Item>
             <Menu.Item key="5">
-              <Link to='order'>
+              <Link to='profile'>
                 <Icon type="user" />
                 <span>评价管理</span>
               </Link>
             </Menu.Item>
             <Menu.Item key="6">
               <Link to='water'>
-                <Icon type="user" />
-                <span>服   务</span>
+                <Icon type="crown" />
+                <span>服    务</span>
               </Link>
             </Menu.Item>
            

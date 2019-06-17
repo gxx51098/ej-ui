@@ -2,7 +2,7 @@ import React from 'react';
 // 引入css进行页面美化
 import styles from './CustomerPage.css'
 // 导入组件
-import {Modal,Button, Table,message} from 'antd'
+import {Modal,Button,Icon,Table,message} from 'antd'
 import axios from '../utils/axios'
 import OrderForm from './OrderForm'
 
@@ -150,8 +150,8 @@ align:"center",
 render:(text,record)=>{
 return (
 <div>
-<Button type='link' size="small" onClick={this.handleDelete.bind(this,record.id)}>删除</Button>
-<Button type='link' size="small" onClick={this.toEdit.bind(this,record)}>修改</Button>
+<Button type='link' size="small" onClick={this.handleDelete.bind(this,record.id)}><Icon type="delete"></Icon></Button>
+<Button type='link' size="small" onClick={this.toEdit.bind(this,record)}><Icon type="edit"></Icon></Button>
 </div>
 )
 }
@@ -173,7 +173,7 @@ return (
 <div className={styles.order}>
 <div className={styles.title}>订单管理</div>
 <div className={styles.btns}>
-<Button onClick={this.toAdd.bind(this)}>添加</Button> &nbsp;
+<Button onClick={this.toAdd.bind(this)}><Icon type="plus-square"></Icon></Button> &nbsp;
 <Button onClick={this.handleBatchDelete.bind(this)}>批量删除</Button> &nbsp;
 <Button type="link">导出</Button>
 </div>
