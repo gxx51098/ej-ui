@@ -2,18 +2,21 @@ import React from 'react';
 // 引入css进行页面美化
 import styles from './CustomerPage.css'
 // 导入组件
-import {Modal,Button, Table,message} from 'antd'
+import { Button, Table, Icon, Popconfirm, message, Input, Modal} from 'antd'
 import axios from '../utils/axios'
 import WaiterForm from './WaiterForm'
 
 
+const Search = Input.Search
 // 组件类必须要继承React.Component，是一个模块，顾客管理子功能
 class WaiterPage extends React.Component {
+ 
   // 局部状态state
   constructor(){
+
     super();
     this.state = {
-      ids:[], // 批量删除的时候保存的id
+      ids:[],// 批量删除的时候保存的id
       list:[],
       loading:false,
       visible:false,
@@ -27,7 +30,7 @@ class WaiterPage extends React.Component {
 
   reloadData(){
     this.setState({loading:true});
-    axios.get("/waiter/findAll")
+    axios.get("/waiter/findAllWaiter")
     
     .then((result)=>{
       // console.log(result);
@@ -47,7 +50,7 @@ class WaiterPage extends React.Component {
       content: '删除后数据将无法恢复',
       onOk:() => {
         // 删除操作
-        axios.get("/waiter/deleteById",{
+        axios.get("/waiter/deleteWaiterById",{
           params:{
             id:id
           }
@@ -60,6 +63,22 @@ class WaiterPage extends React.Component {
       }
     });
   }
+
+  tobatchDelete(){
+    Modal.confirm({
+      title: '确定删除这些记录吗?',
+      content: '删除后数据将无法恢复',
+      onOk:() => {
+        axios.post("/waiter/batchDeleteWaiter",{ids:this.state.ids})
+        .then((result)=>{
+          //批量删除后重载数据
+          message.success(result.statusText)
+          this.reloadData();;
+        })
+      }
+    });
+  }
+
   // 取消按钮的事件处理函数
   handleCancel = () => {
     this.setState({ visible: false });
@@ -72,7 +91,7 @@ class WaiterPage extends React.Component {
         return;
       }
       // 表单校验完成后与后台通信进行保存
-      axios.post("/waiter/saveOrUpdate",values)
+      axios.post("/waiter/saveOrUpdateWaiter",values)
       .then((result)=>{
         message.success(result.statusText)
         // 重置表单
@@ -100,6 +119,8 @@ class WaiterPage extends React.Component {
     // 将record值绑定表单中
     this.setState({visible:true})
   }
+//
+
 
   // 组件类务必要重写的方法，表示页面渲染
   render(){
@@ -140,8 +161,9 @@ class WaiterPage extends React.Component {
       render:(text,record)=>{
         return (
           <div>
-            <Button type='link' size="small" onClick={this.handleDelete.bind(this,record.id)}>删除</Button>
-            <Button type='link' size="small" onClick={this.toEdit.bind(this,record)}>修改</Button>
+            <Button type='link' size="small" onClick={this.handleDelete.bind(this,record.id)}><Icon type="delete" ></Icon></Button>
+            <Button type='link' size="small" onClick={this.toEdit.bind(this,record)}><Icon type="edit" ></Icon></Button>
+            
           </div>
         )
       }
@@ -162,14 +184,15 @@ class WaiterPage extends React.Component {
     // 返回结果 jsx(js + xml)
     return (
       <div className={styles.customer}>
-        <div className={styles.title}>评论管理</div>
+        <div className={styles.title}>员工管理</div>
         <div className={styles.btns}>
           <Button onClick={this.toAdd.bind(this)}>添加</Button> &nbsp;
-        
-          <Button type="link">导出</Button>
+          <Button  onClick={this.tobatchDelete.bind(this)}>批量删除</Button>&nbsp;
+         
+          
         </div>
         <Table 
-          bwaitered
+          bordered
           rowKey="id"
           size="small"
           loading={this.state.loading}

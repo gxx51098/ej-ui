@@ -2,18 +2,19 @@ import React from 'react';
 // 引入css进行页面美化
 import styles from './CustomerPage.css'
 // 导入组件
-import {Modal,Button, input,Table,message} from 'antd'
+import {Modal,Button, Table,message,Icon} from 'antd'
 import axios from '../utils/axios'
 import CategoryForm from './CategoryForm'
 
-import CategoryDetails from './CategoryDetails'
+
+
 // 组件类必须要继承React.Component，是一个模块，顾客管理子功能
 class CategoryPage extends React.Component {
   // 局部状态state
   constructor(){
     super();
     this.state = {
-     
+     id:[],
       list:[],
       loading:false,
       visible:false,
@@ -99,12 +100,22 @@ class CategoryPage extends React.Component {
     // 将record值绑定表单中
     this.setState({visible:true})
   }
-    
-    toDetails(record){
-      console.log(record);
-      //跳转
-      this.props.history.push("/CategoryDetails")
+  handleSearch = (value) => {
+    axios.get('/category/findById',value)
+      .then((result) => {
+        if (200 === result.status) {
+          this.setState({
+            list: result.data
+          })
+        }
+      })
+  }  
+  toDetails(record){
+    console.log(record);
+    //跳转
+    this.props.history.push("/categoryDetails")
     }
+    
   // 组件类务必要重写的方法，表示页面渲染
   render(){
     // 变量定义
@@ -115,12 +126,9 @@ class CategoryPage extends React.Component {
       title:'服务项目',
       dataIndex:'name'
     },{
-      title:'价格',
-      dataIndex:'num'
-    },{
       title:'服务类型',
       align:"center",
-      dataIndex:'parent_id'
+      dataIndex:'parentId'
     },{
       title:'操作',
       width:120,
@@ -128,9 +136,9 @@ class CategoryPage extends React.Component {
       render:(text,record)=>{
         return (
           <div>
-            <Button type='link' size="small" onClick={this.handleDelete.bind(this,record.id)}>删除</Button>
-            <Button type='link' size="small" onClick={this.toEdit.bind(this,record)}>修改</Button>
-            <Button type='link' size="small" onClick={this.toDetails.bind(this,record)}>详情</Button>
+            <Button type='link' size="small" onClick={this.handleDelete.bind(this,record.id)}><Icon type="delete" ></Icon></Button>
+            <Button type='link' size="small" onClick={this.toEdit.bind(this,record)}><Icon type="edit" ></Icon></Button>
+            <Button type='link' size="small" onClick={this.toDetails.bind(this,record)}><Icon type="eye" ></Icon></Button>
           </div>
         )
       }
@@ -148,32 +156,12 @@ class CategoryPage extends React.Component {
       }),
     };
     //
- toSelect(){
- 
-      
-      ReactDOM.render(
-        
-           ids=console.log(ids),
-              axios.get("/category/findById",
-              param{
-                id:id
-              }),
-         
-      
-   )
-  }
-      
-
-
-
     // 返回结果 jsx(js + xml)
     return (
       <div className={styles.customer}>
         <div className={styles.title}>分类管理</div>
         <div className={styles.btns}>
           <Button onClick={this.toAdd.bind(this)}>添加</Button> &nbsp;
-          <Button onClick={this.toSelect.bind(this)}>查找</Button> &nbsp;
-         <input type="text" name="id"/>
           <Button type="link">导出</Button>
         </div>
         <Table 

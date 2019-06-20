@@ -2,11 +2,11 @@ import React from 'react';
 // 引入css进行页面美化
 import styles from './CustomerPage.css'
 // 导入组件
-import {Modal,Button, Table,message} from 'antd'
+import {Button, Table, Icon, Popconfirm, message, Input, Modal} from 'antd'
 import axios from '../utils/axios'
 import CommentForm from './CommentForm'
 
-
+const Search = Input.Search
 // 组件类必须要继承React.Component，是一个模块，顾客管理子功能
 class CommentPage extends React.Component {
   // 局部状态state
@@ -102,6 +102,18 @@ class CommentPage extends React.Component {
     // 将record值绑定表单中
     this.setState({visible:true})
   }
+  handleSearch = (value) => {
+    axios.get('/comment/findById',{
+id:value 
+    })
+      .then((result) => {
+        if (200 === result.status) {
+          this.setState({
+            list: result.data
+          })
+        }
+      })
+  }  
 
   // 组件类务必要重写的方法，表示页面渲染
   render(){
@@ -114,11 +126,11 @@ class CommentPage extends React.Component {
       dataIndex:'content'
     },{
       title:'发布时间',
-      dataIndex:'comment_time'
+      dataIndex:'commentTime'
     },{
       title:'订单',
       align:"center",
-      dataIndex:'order_id'
+      dataIndex:'orderId'
     },{
       title:'操作',
       width:120,
@@ -126,8 +138,8 @@ class CommentPage extends React.Component {
       render:(text,record)=>{
         return (
           <div>
-            <Button type='link' size="small" onClick={this.handleDelete.bind(this,record.id)}>删除</Button>
-            <Button type='link' size="small" onClick={this.toEdit.bind(this,record)}>修改</Button>
+            <Button type='link' size="small" onClick={this.handleDelete.bind(this,record.id)}><Icon type="delete" ></Icon></Button>
+            <Button type='link' size="small" onClick={this.toEdit.bind(this,record)}><Icon type="edit" ></Icon></Button>
           </div>
         )
       }
@@ -151,8 +163,11 @@ class CommentPage extends React.Component {
         <div className={styles.title}>评论管理</div>
         <div className={styles.btns}>
           <Button onClick={this.toAdd.bind(this)}>添加</Button> &nbsp;
-          <Button onClick={this.toAdd.bind(this)}>根据id查找</Button> &nbsp;
-          
+          <Search
+          placeholder="输入查询内容"
+          onSearch={value=> this.handleSearch(value)}
+          style={{ width: 200 }}
+        />
           <Button type="link">导出</Button>
         </div>
         <Table 

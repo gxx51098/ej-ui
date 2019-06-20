@@ -34,13 +34,8 @@ class CategoryForm extends React.Component {
                 rules: [{ required: true, message: '请添加服务项目' }],
               })(<Input />)}
             </Form.Item>
-            <Form.Item label="服务单价" >
-              {getFieldDecorator('num', {
-                rules: [{ required: true, message: '请输入服务项目单价' }],
-              })(<Input />)}
-            </Form.Item>
             <Form.Item label="服务类型" >
-              {getFieldDecorator('parent_id', {
+              {getFieldDecorator('parentId', {
                 rules: [{ required: true, message: '请输入服务类别' }],
               })(<Input />)}
             </Form.Item>
