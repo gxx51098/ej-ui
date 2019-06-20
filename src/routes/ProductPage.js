@@ -2,7 +2,7 @@ import React from 'react';
 // 引入css进行页面美化
 import styles from './ProductPage.css'
 // 导入组件
-import {Modal,Button, Table,message} from 'antd'
+import {Modal,Button, Table,message,Icon} from 'antd'
 import axios from '../utils/axios'
 import ProductForm from './ProductForm'
 
@@ -85,7 +85,7 @@ class ProductPage extends React.Component {
       if (err) {
         return;
       }
-      alert(JSON.stringify(values));
+      // alert(JSON.stringify(values));
       // 表单校验完成后与后台通信进行保存
       axios.post("/product/saveOrUpdate",values)
       .then((result)=>{
@@ -115,11 +115,11 @@ class ProductPage extends React.Component {
     // 将record值绑定表单中
     this.setState({visible:true})
   }
-  toDetails(record){
-    console.log(record);
-    //跳转
-    this.props.history.push("/productDetails")
-  }
+  // toDetails(record){
+  //   console.log(record);
+  //   //跳转
+  //   this.props.history.push("/productDetails")
+  // }
 
   // 组件类务必要重写的方法，表示页面渲染
   render(){
@@ -150,9 +150,9 @@ class ProductPage extends React.Component {
       render:(text,record)=>{
         return (
           <div>
-            <Button type='link' size="small" onClick={this.handleDelete.bind(this,record.id)}>删除</Button>
-            <Button type='link' size="small" onClick={this.toEdit.bind(this,record)}>修改</Button>
-            <Button type='link' size="small" onClick={this.toDetails.bind(this,record)}>详情</Button>
+            <Button type='link' size="small" onClick={this.handleDelete.bind(this,record.id)}><Icon type="delete"></Icon></Button>
+            <Button type='link' size="small" onClick={this.toEdit.bind(this,record)}><Icon type="edit"></Icon></Button>
+            {/* <Button type='link' size="small" onClick={this.toDetails.bind(this,record)}><Icon type="eye" ></Icon></Button> */}
           </div>
         )
       }
@@ -175,7 +175,7 @@ class ProductPage extends React.Component {
       <div className={styles.product}>
         <div className={styles.title}>产品管理</div>
         <div className={styles.btns}>
-          <Button onClick={this.toAdd.bind(this)}>添加</Button> &nbsp;
+          <Button onClick={this.toAdd.bind(this)}><Icon type="plus-square"></Icon></Button> &nbsp;
           <Button onClick={this.handleBatchDelete.bind(this)}>批量删除</Button> &nbsp;
           <Button type="link">导出</Button>
         </div>

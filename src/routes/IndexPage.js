@@ -48,15 +48,15 @@ class IndexPage extends React.Component {
               </Link>
             </Menu.Item>
             <Menu.Item key="5">
-              <Link to='profile'>
-                <Icon type="user" />
+              <Link to='comment'>
+                <Icon type="profile" />
                 <span>评价管理</span>
               </Link>
             </Menu.Item>
             <Menu.Item key="6">
-              <Link to='water'>
+              <Link to='waiter'>
                 <Icon type="crown" />
-                <span>服    务</span>
+                <span>员工管理</span>
               </Link>
             </Menu.Item>
            

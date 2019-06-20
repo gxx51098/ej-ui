@@ -1,7 +1,16 @@
 import React from 'react';
-import {Form,Modal,Input} from 'antd'
+import {
+  message,
+  Upload,
+  Button,
+  Icon,
+  Form,
+  Modal,
+  Input,
+  Select
+} from 'antd'
 
-class OrderForm extends React.Component {
+class CustomerForm extends React.Component {
 
   render(){
     const formLayout = {
@@ -18,6 +27,31 @@ class OrderForm extends React.Component {
     const { visible, onCancel, onCreate, form } = this.props;
     const { getFieldDecorator } = form;
     // 将表单中没有出现的值做一个双向数据绑定
+    const upload_props =  {
+      name: 'file',
+      action: 'http://134.175.154.93:8099/manager/file/upload',
+      onChange:(info)=> {
+        if (info.file.status !== 'uploading') {
+          console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+          //后端的回应信息
+          let result = info.file.response;
+          // 将上传成功后的图片id保存到表单中，点击提交的时候再随着表单提交提交到后台
+          if(result.status=== 200){
+            let photo = result.data.id;
+            // 自行将photo设置到表单中
+            this.props.form.setFieldsValue({
+              photo
+            });
+          } else {
+            message.error(result.message)
+          }
+        } else if (info.file.status === 'error') {
+          message.error(`${info.file.name} file upload failed.`);
+        }
+      },
+    };
     getFieldDecorator("id");
     getFieldDecorator("status");
     getFieldDecorator("photo");
@@ -78,4 +112,4 @@ const mapPropsToFields = (props)=>{
 
 export default Form.create({
   mapPropsToFields
-})(OrderForm);
+})(CustomerForm);

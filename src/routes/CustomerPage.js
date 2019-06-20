@@ -2,10 +2,10 @@ import React from 'react';
 // 引入css进行页面美化
 import styles from './CustomerPage.css'
 // 导入组件
-import {Modal,Button,Icon, Table,message} from 'antd'
+import {Modal,Button,Icon, Table,message,Input} from 'antd'
 import axios from '../utils/axios'
 import CustomerForm from './CustomerForm'
-
+const Search =Input.Search;
 
 // 组件类必须要继承React.Component，是一个模块，顾客管理子功能
 class CustomerPage extends React.Component {
@@ -28,7 +28,7 @@ class CustomerPage extends React.Component {
   // 重载数据
   reloadData(){
     this.setState({loading:true});
-    axios.get("/customer/findAll")
+    axios.get("/customer/findCustomerAll")
     
     .then((result)=>{
       // console.log(result);
@@ -46,7 +46,7 @@ class CustomerPage extends React.Component {
       content: '删除后数据将无法恢复',
       onOk:() => {
         console.log(this.state.ids)
-        axios.post("/customer/batchDelete",{ids:this.state.ids})
+        axios.post("/customer/batchDeleteCustomer",{ids:this.state.ids})
         .then((result)=>{
           //批量删除后重载数据
           message.success(result.statusText)
@@ -63,7 +63,7 @@ class CustomerPage extends React.Component {
       content: '删除后数据将无法恢复',
       onOk:() => {
         // 删除操作
-        axios.post("/customer/deleteById",{
+        axios.post("/customer/deleteCustomerById",{
             id:id
           })
         .then((result)=>{
@@ -87,7 +87,7 @@ class CustomerPage extends React.Component {
       }
 
       // 表单校验完成后与后台通信进行保存
-      axios.post('/customer/saveOrUpdate',values)
+      axios.post('/customer/saveCustomerOrUpdateCustomer',values)
       .then((result)=>{
         message.success(result.statusText)
         // 重置表单
@@ -117,10 +117,33 @@ class CustomerPage extends React.Component {
   }
   toDetails(record){
     console.log(record);
-    //跳转
-    this.props.history.push("/customerDetails")
+    //跳转 react-router
+    this.props.history.push({
+      pathname:"/customerDetails",
+      payload:record
+    })
   }
+  handleSearch = (value) => {
+    console.log(value)
+      if(value==''||value==null||value==undefined){
+        this.reloadData()
+      }
+      axios.get('customer/findCustomerById', { params: { id: value } })
+        .then((result) => {
+          
+          if (200 === result.status) {
+            let temp = [];
+            if(result.data!=undefined){
+              console.log(1)
+              temp.push(result.data)
+            }
+            
+        
+            this.setState({ list: temp })
   
+          }
+        })
+    }
 
   // 组件类务必要重写的方法，表示页面渲染
   render(){
@@ -141,7 +164,12 @@ class CustomerPage extends React.Component {
     },{
       title:'图片',
       align:"center",
-      dataIndex:'photos'
+      dataIndex:'photo',
+      render(text){
+        return (
+          <img width={40} height={40} src={"http://134.175.154.93:8888/group1/"+text}/>
+        )
+      }
     },{
       title:'操作',
       width:200,
@@ -177,7 +205,16 @@ class CustomerPage extends React.Component {
           <Button onClick={this.toAdd.bind(this)}><Icon type="plus-square"></Icon></Button> &nbsp;
           <Button onClick={this.handleBatchDelete.bind(this)}>批量删除</Button> &nbsp;
           <Button type="link">导出</Button>
+          <Search 
+                       placeholder="顾客ID查询"
+            
+                       onSearch={value => this.handleSearch(value)}
+            
+                       style={{ width: 200,  float:'right' }}
+                     />
+         
         </div>
+       
         <Table 
           bordered
           rowKey="id"

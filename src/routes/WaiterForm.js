@@ -1,16 +1,7 @@
 import React from 'react';
-import {
-  message,
-  Upload,
-  Button,
-  Icon,
-  Form,
-  Modal,
-  Input,
-  Select
-} from 'antd'
+import {Form,Modal,Input} from 'antd'
 
-class CustomerForm extends React.Component {
+class WaiterForm extends React.Component {
 
   render(){
     const formLayout = {
@@ -27,48 +18,19 @@ class CustomerForm extends React.Component {
     const { visible, onCancel, onCreate, form } = this.props;
     const { getFieldDecorator } = form;
     // 将表单中没有出现的值做一个双向数据绑定
-    const upload_props =  {
-      name: 'file',
-      action: 'http://134.175.154.93:8099/manager/file/upload',
-      onChange:(info)=> {
-        if (info.file.status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-          //后端的回应信息
-          let result = info.file.response;
-          // 将上传成功后的图片id保存到表单中，点击提交的时候再随着表单提交提交到后台
-          if(result.status=== 200){
-            let photo = result.data.id;
-            // 自行将photo设置到表单中
-            this.props.form.setFieldsValue({
-              photo
-            });
-          } else {
-            message.error(result.message)
-          }
-        } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} file upload failed.`);
-        }
-      },
-    };
     getFieldDecorator("id");
     getFieldDecorator("status");
     getFieldDecorator("photo");
     return (
       <Modal
           visible={visible}
-          title="添加顾客信息"
+          title="添加员工"
           okText="提交"
           onCancel={onCancel}
           onOk={onCreate}
         >
           <Form layout="vertical" {...formLayout}>
-            <Form.Item label="姓名" >
-              {getFieldDecorator('realname', {
-                rules: [{ required: true, message: '请输入姓名!' }],
-              })(<Input />)}
-            </Form.Item>
+            
             <Form.Item label="手机号" >
               {getFieldDecorator('telephone', {
                 rules: [{ required: true, message: '请输入手机号!' }],
@@ -78,14 +40,21 @@ class CustomerForm extends React.Component {
               {getFieldDecorator('password', {
                 rules: [{ required: true, message: '请输入密码!' }],
               })(<Input.Password />)}
+              
             </Form.Item>
-             <Form.Item label="头像">
-              <Upload {...upload_props}>
-                <Button>
-                  <Icon type="upload" /> Click to Upload
-                </Button>
-              </Upload>
+            <Form.Item label="姓名" >
+              {getFieldDecorator('realname', {
+                rules: [{ required: true, message: '请输入姓名!' }],
+              })(<Input />)}
             </Form.Item>
+
+            <Form.Item label="银行卡号">
+              {getFieldDecorator('idcard', {
+                rules: [{ required: true, message: '请输入银行卡号!' }],
+              })(<Input />)}
+              
+            </Form.Item>
+           
           </Form>
         </Modal>
     );
@@ -103,4 +72,4 @@ const mapPropsToFields = (props)=>{
 
 export default Form.create({
   mapPropsToFields
-})(CustomerForm);
+})(WaiterForm);

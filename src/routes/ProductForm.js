@@ -50,7 +50,7 @@ class ProductForm extends React.Component {
     // 定义上传组件的参数
     const upload_props =  {
       name: 'file',
-      action: 'http://152.136.126.144:8099/manager/file/upload',
+      action: 'http://134.175.154.93:8099/manager/file/upload',
       onChange:(info)=> {
         if (info.file.status !== 'uploading') {
           console.log(info.file, info.fileList);
