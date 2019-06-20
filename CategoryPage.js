@@ -2,22 +2,23 @@ import React from 'react';
 // 引入css进行页面美化
 import styles from './CustomerPage.css'
 // 导入组件
-import {Button, Table, Icon, Popconfirm, message, Input, Modal} from 'antd'
+import {Modal,Button, Table,message,Icon} from 'antd'
 import axios from '../utils/axios'
-import CommentForm from './CommentForm'
+import CategoryForm from './CategoryForm'
 
-const Search = Input.Search
+
+
 // 组件类必须要继承React.Component，是一个模块，顾客管理子功能
-class CommentPage extends React.Component {
+class CategoryPage extends React.Component {
   // 局部状态state
   constructor(){
     super();
     this.state = {
-      ids:[], // 批量删除的时候保存的id
+     id:[],
       list:[],
       loading:false,
       visible:false,
-      comment:{}
+      category:{}
     }
   }
   // 在生命周期钩子函数中调用重载数据
@@ -28,10 +29,10 @@ class CommentPage extends React.Component {
   // 重载数据
   reloadData(){
     this.setState({loading:true});
-    axios.get("/comment/findAll")
+    axios.get("/category/findAll")
     
     .then((result)=>{
-      // console.log(result);
+      //console.log(result);
       // 将查询数据更新到state中
       this.setState({list:result.data})
     })
@@ -39,28 +40,25 @@ class CommentPage extends React.Component {
       this.setState({loading:false});
     })
   }
-  
-  // 单个删除
-  handleDelete(id){
-    Modal.confirm({
-      title: '确定删除这条记录吗?',
-      content: '删除后数据将无法恢复',
-      onOk:() => {
-        // 删除操作
-        axios.post("/comment/deleteById",{
-            id:id
-          })
-        .then((result)=>{
-          // 删除成功后提醒消息，并且重载数据
-          message.success(result.statusText);
-          this.reloadData();
+ // 单个删除
+ handleDelete(id){
+  Modal.confirm({
+    title: '确定删除这条评论吗?',
+    content: '删除后数据将无法恢复',
+    onOk:() => {
+      // 删除操作
+      axios.post("/category/deleteById",{
+          id:id
         })
-      }
-    });
-  }
-  handleSelect=()=>{
-
-  }
+      .then((result)=>{
+        // 删除成功后提醒消息，并且重载数据
+        message.success(result.statusText);
+        this.reloadData();
+      })
+    }
+  });
+}
+ 
   // 取消按钮的事件处理函数
   handleCancel = () => {
     this.setState({ visible: false });
@@ -74,7 +72,7 @@ class CommentPage extends React.Component {
       }
       console.log(values)
       // 表单校验完成后与后台通信进行保存
-      axios.post('/comment/saveOrUpdate',values)
+      axios.post('/category/saveOrUpdate',values)
       .then((result)=>{
         message.success(result.statusText)
         // 重置表单
@@ -93,38 +91,31 @@ class CommentPage extends React.Component {
   // 去添加
   toAdd(){
     // 将默认值置空,模态框打开
-    this.setState({comment:{},visible:true})
+    this.setState({category:{},visible:true})
   }
   // 去更新
   toEdit(record){
     // 更前先先把要更新的数据设置到state中
-    this.setState({comment:record})
+    this.setState({category:record})
     // 将record值绑定表单中
     this.setState({visible:true})
   }
   handleSearch = (value) => {
-    console.log(value)
-      if(value==''||value==null||value==undefined){
-        this.reloadData()
-      }
-      axios.get('comment/findById', { params: { id: value } })
-        .then((result) => {
-          
-          if (200 === result.status) {
-            let temp = [];
-            if(result.data!=undefined){
-              console.log(1)
-              temp.push(result.data)
-            }
-            
-        
-            this.setState({ list: temp })
-  
-          }
-        })
+    axios.get('/category/findById',value)
+      .then((result) => {
+        if (200 === result.status) {
+          this.setState({
+            list: result.data
+          })
+        }
+      })
+  }  
+  toDetails(record){
+    console.log(record);
+    //跳转
+    this.props.history.push("/categoryDetails")
     }
-
-
+    
   // 组件类务必要重写的方法，表示页面渲染
   render(){
     // 变量定义
@@ -132,15 +123,12 @@ class CommentPage extends React.Component {
       title:'编号',
       dataIndex:'id'
     },{
-      title:'评论内容',
-      dataIndex:'content'
+      title:'服务项目',
+      dataIndex:'name'
     },{
-      title:'发布时间',
-      dataIndex:'commentTime'
-    },{
-      title:'订单',
+      title:'服务类型',
       align:"center",
-      dataIndex:'orderId'
+      dataIndex:'parentId'
     },{
       title:'操作',
       width:120,
@@ -150,6 +138,7 @@ class CommentPage extends React.Component {
           <div>
             <Button type='link' size="small" onClick={this.handleDelete.bind(this,record.id)}><Icon type="delete" ></Icon></Button>
             <Button type='link' size="small" onClick={this.toEdit.bind(this,record)}><Icon type="edit" ></Icon></Button>
+            <Button type='link' size="small" onClick={this.toDetails.bind(this,record)}><Icon type="eye" ></Icon></Button>
           </div>
         )
       }
@@ -166,21 +155,15 @@ class CommentPage extends React.Component {
         name: record.name,
       }),
     };
-    
+    //
     // 返回结果 jsx(js + xml)
     return (
       <div className={styles.customer}>
-      <div className={styles.title}>评论管理</div>
-      <div className={styles.btns}>
-      <Button onClick={this.toAdd.bind(this)}>添加</Button> &nbsp;
-      <Search 
-                     placeholder="评论ID查询"
-          
-                     onSearch={value => this.handleSearch(value)}
-          
-                     style={{ width: 200,  float:'right' }}
-                   />
-      </div>
+        <div className={styles.title}>分类管理</div>
+        <div className={styles.btns}>
+          <Button onClick={this.toAdd.bind(this)}>添加</Button> &nbsp;
+          <Button type="link">导出</Button>
+        </div>
         <Table 
           bordered
           rowKey="id"
@@ -190,8 +173,8 @@ class CommentPage extends React.Component {
           columns={columns}
           dataSource={this.state.list}/>
 
-         <CommentForm
-          initData={this.state.comment}
+         <CategoryForm
+          initData={this.state.category}
           wrappedComponentRef={this.saveFormRef}
           visible={this.state.visible}
           onCancel={this.handleCancel}
@@ -201,4 +184,4 @@ class CommentPage extends React.Component {
   }
 }
 
-export default CommentPage;
+export default CategoryPage;

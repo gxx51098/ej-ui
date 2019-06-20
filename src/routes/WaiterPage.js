@@ -91,7 +91,7 @@ class WaiterPage extends React.Component {
         return;
       }
       // 表单校验完成后与后台通信进行保存
-      axios.post("/waiter/UpdateWaiter",values)
+      axios.post("/waiter/insertWaiter",values)
       .then((result)=>{
         message.success(result.statusText)
         // 重置表单
@@ -119,7 +119,58 @@ class WaiterPage extends React.Component {
     // 将record值绑定表单中
     this.setState({visible:true})
   }
+    toDetails(record){
+    console.log(record);
+    //跳转
+    this.props.history.push("/waiterDetails")
+    }
+   
+    handleSearch = (value) => {
+      console.log(value)
+        if(value==''||value==null||value==undefined){
+          this.reloadData()
+        }
+        axios.get('waiter/findWaiterById', { params: { id: value } })
+          .then((result) => {
+            
+            if (200 === result.status) {
+              let temp = [];
+              if(result.data!=undefined){
+                console.log(1)
+                temp.push(result.data)
+              }
+              
+          
+              this.setState({ list: temp })
+    
+            }
+          })
+      }
+  
+    
 //
+handleSearch= (value) => {
+  console.log(value)
+    if(value==''||value==null||value==undefined){
+      this.reloadData()
+    }
+    axios.get('waiter/findWaiterById', { params: { id: value } })
+      .then((result) => {
+        
+        if (200 === result.status) {
+          let temp = [];
+          if(result.data!=undefined){
+            console.log(1)
+            temp.push(result.data)
+          }
+          
+      
+          this.setState({ list: temp })
+
+        }
+      })
+  }
+
 
 
   // 组件类务必要重写的方法，表示页面渲染
@@ -153,7 +204,12 @@ class WaiterPage extends React.Component {
     {
       title:'头像',
       align:"center",
-      dataIndex:'photo'
+      dataIndex:'photo',
+      render(text){
+        return (
+        <img width={40} height={40} src={"http://134.175.154.93:8888/group1/"+text}/>
+        )
+        },
     },{
       title:'操作',
       width:120,
@@ -188,6 +244,15 @@ class WaiterPage extends React.Component {
         <div className={styles.btns}>
           <Button onClick={this.toAdd.bind(this)}>添加</Button> &nbsp;
           <Button  onClick={this.tobatchDelete.bind(this)}>批量删除</Button>&nbsp;
+          <Search 
+                       placeholder="员工ID查询"
+            
+                       onSearch={value => this.handleSearch(value)}
+            
+                       style={{ width: 200,  float:'right' }}
+                     />
+
+
          
           
         </div>
